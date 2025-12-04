@@ -1,11 +1,9 @@
 
 using System.Text;
 using System.Text.Json;
-
 using Companies.Application.Abstractions.Handlers;
 using Companies.Application.Features.Companies.Commands.CreateCompany;
 using Companies.Application.Features.Companies.Models;
-
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -14,7 +12,7 @@ namespace Companies.Import.Worker.Consumers;
 public class ImportCompanyConsumer : BackgroundService
 {
     private readonly ConnectionFactory _connectionFactory;
-    private readonly string _querueName = "import-companies-queue";
+    private readonly string _queueName = "import-companies-queue";
     private readonly ILogger<ImportCompanyConsumer> _logger;
     private readonly IServiceProvider _serviceProvider;
 
@@ -29,28 +27,32 @@ public class ImportCompanyConsumer : BackgroundService
 
         _connectionFactory = new ConnectionFactory
         {
-            HostName = configuration["RabbitMQ:Host"],
-            UserName = configuration["RabbitMQ:Username"],
-            Password = configuration["RabbitMQ:Password"]
+            HostName = configuration["RabbitMQ:Host"] ??
+                throw new InvalidOperationException("RabbitMQ:Host configuration is required"),
+            UserName = configuration["RabbitMQ:Username"] ??
+                throw new InvalidOperationException("RabbitMQ:Username configuration is required"),
+            Password = configuration["RabbitMQ:Password"] ??
+                throw new InvalidOperationException("RabbitMQ:Password configuration is required")
         };
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var connection = _connectionFactory.CreateConnection();
-        using var channel = connection.CreateModel();
+        await using var connection = await _connectionFactory.CreateConnectionAsync(stoppingToken);
+        await using var channel = await connection.CreateChannelAsync(cancellationToken: stoppingToken);
 
-        channel.QueueDeclare(
-            queue: _querueName,
+        await channel.QueueDeclareAsync(
+            queue: _queueName,
             durable: false,
             exclusive: false,
             autoDelete: false,
-            arguments: null
+            arguments: null,
+            cancellationToken: stoppingToken
         );
 
-        var consumer = new EventingBasicConsumer(channel);
+        var consumer = new AsyncEventingBasicConsumer(channel);
 
-        consumer.Received += async (sender, eventArgs) =>
+        consumer.ReceivedAsync += async (sender, eventArgs) =>
         {
             var contentArray = eventArgs.Body.ToArray();
             var contentString = Encoding.UTF8.GetString(contentArray);
@@ -89,10 +91,10 @@ public class ImportCompanyConsumer : BackgroundService
                 }
             }
 
-            channel.BasicAck(eventArgs.DeliveryTag, false);
+            await channel.BasicAckAsync(eventArgs.DeliveryTag, false, stoppingToken);
         };
 
-        channel.BasicConsume(_querueName, false, consumer);
+        await channel.BasicConsumeAsync(_queueName, false, consumer, stoppingToken);
 
         while (!stoppingToken.IsCancellationRequested)
         {

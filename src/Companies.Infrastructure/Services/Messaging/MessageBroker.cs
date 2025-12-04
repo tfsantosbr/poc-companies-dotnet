@@ -9,25 +9,28 @@ namespace Companies.Infrastructure.Services.Messaging;
 public class MessageBroker : IMessageBroker
 {
     private readonly ConnectionFactory _connectionFactory;
-    private readonly string _querueName = "import-companies-queue";
+    private readonly string _queueName = "import-companies-queue";
 
     public MessageBroker(IConfiguration configuration)
     {
         _connectionFactory = new ConnectionFactory
         {
-            HostName = configuration["RabbitMQ:Host"],
-            UserName = configuration["RabbitMQ:Username"],
-            Password = configuration["RabbitMQ:Password"]
+            HostName = configuration["RabbitMQ:Host"] ??
+                throw new InvalidOperationException("RabbitMQ:Host configuration is required"),
+            UserName = configuration["RabbitMQ:Username"] ??
+                throw new InvalidOperationException("RabbitMQ:Username configuration is required"),
+            Password = configuration["RabbitMQ:Password"] ??
+                throw new InvalidOperationException("RabbitMQ:Password configuration is required")
         };
     }
 
-    public Task PostMessageAsync<TMessage>(TMessage message)
+    public async Task PostMessageAsync<TMessage>(TMessage message)
     {
-        using var connection = _connectionFactory.CreateConnection();
-        using var channel = connection.CreateModel();
+        await using var connection = await _connectionFactory.CreateConnectionAsync();
+        await using var channel = await connection.CreateChannelAsync();
 
-        channel.QueueDeclare(
-            queue: _querueName,
+        await channel.QueueDeclareAsync(
+            queue: _queueName,
             durable: false,
             exclusive: false,
             autoDelete: false,
@@ -37,13 +40,10 @@ public class MessageBroker : IMessageBroker
         var messageAsString = JsonSerializer.Serialize(message);
         var messageInBytes = Encoding.UTF8.GetBytes(messageAsString);
 
-        channel.BasicPublish(
+        await channel.BasicPublishAsync(
             exchange: "",
-            routingKey: _querueName,
-            basicProperties: null,
+            routingKey: _queueName,
             body: messageInBytes
         );
-
-        return Task.CompletedTask;
     }
 }
