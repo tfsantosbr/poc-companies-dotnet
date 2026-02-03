@@ -1,0 +1,24 @@
+---
+description: Regras para comandos de terminal neste repositório (evitar criar arquivo "nul" no Windows)
+alwaysApply: true
+---
+
+# Comandos de terminal
+
+## Nunca criar o arquivo "nul" no repositório
+
+No Windows, redirecionar saída para um **caminho** que termina em `nul` (ex: `> ".\nul"` ou `> "c:\...\projeto\nul"`) **cria um arquivo** chamado `nul` na pasta, em vez de usar o dispositivo NUL. Isso suja o repositório.
+
+**Proibido:**
+
+- `> nul` quando o caminho estiver dentro do projeto (ex: `> "c:\...\poc-companies-dotnet\nul"`)
+- `> .\nul` ou `> ./nul`
+- Qualquer redirecionamento cujo destino seja um path do projeto contendo `nul`
+
+**Usar em vez disso:**
+
+- **Bash (shell padrão):** `> /dev/null` ou `2>/dev/null` para descartar saída
+- **Cmd/PowerShell:** usar apenas `> NUL` (sem caminho, NUL sozinho como dispositivo)
+- Para "aguardar N segundos": usar `sleep 5` (bash) e **não** redirecionar para arquivo; ou omitir o redirecionamento
+
+Seguir sempre essa regra em todos os comandos executados neste projeto.
