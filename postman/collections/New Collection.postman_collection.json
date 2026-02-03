@@ -1,0 +1,29 @@
+{
+  "info": {
+    "_postman_id": "7d9f9e25-349e-4c8b-8f4f-959ec2621101",
+    "name": "Companies API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "id": "dc15c871-4503-4ced-a2f5-6815e8e778c1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
