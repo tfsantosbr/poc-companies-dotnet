@@ -1,4 +1,5 @@
-﻿using Companies.Infrastructure.Contexts;
+using Companies.Infrastructure.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Companies.Api.Extensions;
 
@@ -24,13 +25,13 @@ public static class EnvironmentExtensions
 
         app.UseApiVersionedSwagger();
 
-        // migrations
-
         using var scope = app.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<CompaniesContext>();
 
-        // seed sample data
+        // aplica migrações do EF Core antes do seed
+        context.Database.Migrate();
 
+        // seed sample data
         var databaseSeed = new CompaniesDatabaseSeed(context);
         databaseSeed.SeedData();
 
