@@ -1,0 +1,690 @@
+{
+  "info": {
+    "_postman_id": "3c4be4ff-0dc2-4951-b7e7-f7bd15b8496f",
+    "name": "Companies API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Request Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "e93314d5-ce4b-4552-90d5-ceaec0a021c6",
+                "exec": [
+                  "var jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"access_token\", jsonData.token);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "id": "a56f021a-9dd2-401d-ab31-5167e20a9203",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"test\",\r\n    \"password\": \"test\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/authentication/token",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "authentication",
+                "token"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "1b3e6898-a3ad-481a-83b3-474b894c90bc"
+    },
+    {
+      "name": "Companies",
+      "item": [
+        {
+          "name": "Find companies",
+          "id": "b2051843-4411-4b05-a470-42eae9e098a7",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/companies",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "companies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create company",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "d9ed6be1-196f-429e-8509-ceb705733da6",
+                "exec": [
+                  "pm.variables.set(\"randomZipCode\", _.random(10000, 99999))\r",
+                  "pm.variables.set(\"randomCnpj\", _.random(10000000000000, 99999999999999))\r",
+                  "pm.variables.set(\"randomMainActivity\", _.sample([4399103, 4723700, 4774100, 5611203, 9492800]))\r",
+                  "pm.variables.set(\"randomLegalNature\", _.sample([\"EIRELI\", \"MEI\", \"LTDA\"]))\r",
+                  "pm.variables.set(\"randomPartnerQualifications\", _.sample([5, 10, 16, 22, 54]))\r",
+                  "pm.variables.set(\"randomPartnerIds\", _.sample([\r",
+                  "  \"012af8a2-8de0-45b7-b9c7-dcfdb3b491b3\",\r",
+                  "  \"1a0592e2-71f0-48cc-8267-0f8d75fe0a5e\",\r",
+                  "  \"9132b269-ff90-402d-88d0-2f9e7fdb312f\",\r",
+                  "  \"c7baa255-6bfb-4d67-91da-fc1d858fdf00\",\r",
+                  "  \"fd532165-d7fd-44bb-b19b-f8e2a1c2073f\",\r",
+                  "]))\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "ad7c74d3-6cd6-4784-8aee-45c69faf6366",
+                "exec": [
+                  "var response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"lastCreatedCompanyId\", response.id)"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "id": "1f88f1c0-6260-4dd1-9f62-6a9564ae545b",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"cnpj\": \"{{randomCnpj}}\",\r\n  \"name\": \"{{$randomCompanyName}}\",\r\n  \"legalNature\": \"{{randomLegalNature}}\",\r\n  \"mainActivityId\": {{randomMainActivity}},\r\n  \"address\": {\r\n    \"postalCode\": \"{{randomZipCode}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"number\": \"{{$randomInt}}\",\r\n    \"complement\": \"{{$randomLastName}}\",\r\n    \"neighborhood\": \"{{$randomFirstName}}\",\r\n    \"city\": \"{{$randomCity}}\",\r\n    \"state\": \"{{$randomCountryCode}}\",\r\n    \"country\": \"{{$randomCountry}}\"\r\n  },\r\n  \"partners\": [\r\n    {\r\n      \"partnerId\": \"{{randomPartnerIds}}\",\r\n      \"qualificationId\": {{randomPartnerQualifications}},\r\n      \"joinedAt\": \"2022-01-01\"\r\n    }\r\n  ],\r\n  \"phones\": [\r\n    {\r\n      \"countryCode\": \"11\",\r\n      \"number\": \"{{$randomBankAccount}}\"\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/companies",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "companies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Import companies",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "d9ed6be1-196f-429e-8509-ceb705733da6",
+                "exec": [
+                  "pm.variables.set(\"randomZipCode\", _.random(10000, 99999))\r",
+                  "pm.variables.set(\"randomCnpj1\", _.random(10000000000000, 99999999999999))\r",
+                  "pm.variables.set(\"randomCnpj2\", _.random(10000000000000, 99999999999999))\r",
+                  "pm.variables.set(\"randomCnpj3\", _.random(10000000000000, 99999999999999))\r",
+                  "pm.variables.set(\"randomMainActivity\", _.sample([4399103, 4723700, 4774100, 5611203, 9492800]))\r",
+                  "pm.variables.set(\"randomLegalNature\", _.sample([\"EIRELI\", \"MEI\", \"LTDA\"]))\r",
+                  "pm.variables.set(\"randomPartnerQualifications\", _.sample([5, 10, 16, 22, 54]))\r",
+                  "pm.variables.set(\"randomPartnerIds\", _.sample([\r",
+                  "  \"012af8a2-8de0-45b7-b9c7-dcfdb3b491b3\",\r",
+                  "  \"1a0592e2-71f0-48cc-8267-0f8d75fe0a5e\",\r",
+                  "  \"9132b269-ff90-402d-88d0-2f9e7fdb312f\",\r",
+                  "  \"c7baa255-6bfb-4d67-91da-fc1d858fdf00\",\r",
+                  "  \"fd532165-d7fd-44bb-b19b-f8e2a1c2073f\",\r",
+                  "]))\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "ad7c74d3-6cd6-4784-8aee-45c69faf6366",
+                "exec": [
+                  "pm.test(\"Successful POST request\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "e69d6562-01ac-49c2-a406-96f94b02789a",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"companies\": [\r\n        {\r\n            \"cnpj\": \"{{randomCnpj1}}\",\r\n            \"name\": \"{{$randomCompanyName}}\",\r\n            \"legalNature\": \"{{randomLegalNature}}\",\r\n            \"mainActivityId\": {{randomMainActivity}},\r\n            \"address\": {\r\n                \"postalCode\": \"{{randomZipCode}}\",\r\n                \"street\": \"{{$randomStreetName}}\",\r\n                \"number\": \"{{$randomInt}}\",\r\n                \"complement\": \"{{$randomLastName}}\",\r\n                \"neighborhood\": \"{{$randomFirstName}}\",\r\n                \"city\": \"{{$randomCity}}\",\r\n                \"state\": \"{{$randomCountryCode}}\",\r\n                \"country\": \"{{$randomCountry}}\"\r\n            },\r\n            \"partners\": [\r\n                {\r\n                    \"partnerId\": \"{{randomPartnerIds}}\",\r\n                    \"qualificationId\": {{randomPartnerQualifications}},\r\n                    \"joinedAt\": \"2022-01-01\"\r\n                }\r\n            ],\r\n            \"phones\": [\r\n                {\r\n                    \"countryCode\": \"11\",\r\n                    \"number\": \"{{$randomBankAccount}}\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"cnpj\": \"{{randomCnpj2}}\",\r\n            \"name\": \"{{$randomCompanyName}}\",\r\n            \"legalNature\": \"{{randomLegalNature}}\",\r\n            \"mainActivityId\": {{randomMainActivity}},\r\n            \"address\": {\r\n                \"postalCode\": \"{{randomZipCode}}\",\r\n                \"street\": \"{{$randomStreetName}}\",\r\n                \"number\": \"{{$randomInt}}\",\r\n                \"complement\": \"{{$randomLastName}}\",\r\n                \"neighborhood\": \"{{$randomFirstName}}\",\r\n                \"city\": \"{{$randomCity}}\",\r\n                \"state\": \"{{$randomCountryCode}}\",\r\n                \"country\": \"{{$randomCountry}}\"\r\n            },\r\n            \"partners\": [\r\n                {\r\n                    \"partnerId\": \"{{randomPartnerIds}}\",\r\n                    \"qualificationId\": {{randomPartnerQualifications}},\r\n                    \"joinedAt\": \"2022-01-01\"\r\n                }\r\n            ],\r\n            \"phones\": [\r\n                {\r\n                    \"countryCode\": \"11\",\r\n                    \"number\": \"{{$randomBankAccount}}\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"cnpj\": \"{{randomCnpj3}}\",\r\n            \"name\": \"{{$randomCompanyName}}\",\r\n            \"legalNature\": \"{{randomLegalNature}}\",\r\n            \"mainActivityId\": {{randomMainActivity}},\r\n            \"address\": {\r\n                \"postalCode\": \"{{randomZipCode}}\",\r\n                \"street\": \"{{$randomStreetName}}\",\r\n                \"number\": \"{{$randomInt}}\",\r\n                \"complement\": \"{{$randomLastName}}\",\r\n                \"neighborhood\": \"{{$randomFirstName}}\",\r\n                \"city\": \"{{$randomCity}}\",\r\n                \"state\": \"{{$randomCountryCode}}\",\r\n                \"country\": \"{{$randomCountry}}\"\r\n            },\r\n            \"partners\": [\r\n                {\r\n                    \"partnerId\": \"{{randomPartnerIds}}\",\r\n                    \"qualificationId\": {{randomPartnerQualifications}},\r\n                    \"joinedAt\": \"2022-01-01\"\r\n                }\r\n            ],\r\n            \"phones\": [\r\n                {\r\n                    \"countryCode\": \"11\",\r\n                    \"number\": \"{{$randomBankAccount}}\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/companies/import",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "companies",
+                "import"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get valid company",
+          "id": "98a75e56-ad00-4879-84c3-9719a7bc2846",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/companies/{{lastCreatedCompanyId}}",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "companies",
+                "{{lastCreatedCompanyId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update valid company",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "d9ed6be1-196f-429e-8509-ceb705733da6",
+                "exec": [
+                  "pm.environment.set(\"randomZipCode\", _.random(10000, 99999))\r",
+                  "pm.environment.set(\"randomMainActivity\", _.sample([4399103, 4723700, 4774100, 5611203, 9492800]))\r",
+                  "pm.environment.set(\"randomLegalNature\", _.sample([\"EIRELI\", \"MEI\", \"LTDA\"]))\r",
+                  "pm.environment.set(\"randomPartnerQualifications\", _.sample([5, 10, 16, 22, 54]))\r",
+                  "pm.environment.set(\"randomPartnerIds\", _.sample([\r",
+                  "  \"012af8a2-8de0-45b7-b9c7-dcfdb3b491b3\",\r",
+                  "  \"1a0592e2-71f0-48cc-8267-0f8d75fe0a5e\",\r",
+                  "  \"9132b269-ff90-402d-88d0-2f9e7fdb312f\",\r",
+                  "  \"c7baa255-6bfb-4d67-91da-fc1d858fdf00\",\r",
+                  "  \"fd532165-d7fd-44bb-b19b-f8e2a1c2073f\",\r",
+                  "]))\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "id": "e8b332ad-5d2e-47bc-906c-01fb2346b9b0",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{$randomCompanyName}}\",\r\n  \"legalNature\": \"{{randomLegalNature}}\",\r\n  \"mainActivityId\": {{randomMainActivity}},\r\n  \"address\": {\r\n    \"postalCode\": \"{{randomZipCode}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"number\": \"{{$randomInt}}\",\r\n    \"complement\": \"{{$randomLastName}}\",\r\n    \"neighborhood\": \"{{$randomFirstName}}\",\r\n    \"city\": \"{{$randomCity}}\",\r\n    \"state\": \"{{$randomCountryCode}}\",\r\n    \"country\": \"{{$randomCountry}}\"\r\n  },\r\n  \"phones\": [\r\n    {\r\n      \"countryCode\": \"11\",\r\n      \"number\": \"{{$randomBankAccount}}\"\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/companies/{{lastCreatedCompanyId}}",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "companies",
+                "{{lastCreatedCompanyId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove valid company",
+          "id": "b07bbf56-ae52-4aee-98aa-682fc4528ea9",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/companies/{{lastCreatedCompanyId}}",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "companies",
+                "{{lastCreatedCompanyId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "5639bbe1-f089-4197-a87f-6630b0139577"
+    },
+    {
+      "name": "Partners",
+      "item": [
+        {
+          "name": "List partners",
+          "id": "4e2c5ff3-2ed1-4187-8be4-1ada84822d73",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/partners",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "partners"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create partner",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "e4b3cda2-ee05-4674-95a3-c3bc195ea564",
+                "exec": [
+                  "var response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"lastCreatedPartnerId\", response.id)"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "id": "2bac5581-0c0a-4b1a-b3c1-c46cc5525b72",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"{{$randomFirstName}}\",\r\n  \"lastName\": \"{{$randomLastName}}\",\r\n  \"email\": \"{{$randomEmail}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/partners",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "partners"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove partner",
+          "id": "93305be8-9c32-4ba4-ab22-6ea190557c8e",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/partners/{{lastCreatedPartnerId}}",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "partners",
+                "{{lastCreatedPartnerId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "d93e4320-6428-48ef-85e2-61a7a329ab7b"
+    },
+    {
+      "name": "Company Partners",
+      "item": [
+        {
+          "name": "Find company partners",
+          "id": "737c7d63-1e86-439d-a9ff-d02d833c695a",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/companies/b9ffc898-c3e4-4dfb-b1c6-86778f383f73/partners",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "companies",
+                "b9ffc898-c3e4-4dfb-b1c6-86778f383f73",
+                "partners"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add company partner",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "855377fa-a122-4d6a-93bb-750bef336f91",
+                "exec": [
+                  "pm.variables.set(\"randomPartnerQualifications\", _.sample([5, 10, 16, 22, 54]))"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "488a9648-8dd2-48c6-b633-67989ddce06d",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "id": "0685476c-4fb7-4eb5-86c2-a35d2f4e78dd",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"partnerId\": \"012af8a2-8de0-45b7-b9c7-dcfdb3b491b3\",\r\n  \"qualificationId\": {{randomPartnerQualifications}},\r\n  \"joinedAt\": \"2022-12-13\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/companies/b9ffc898-c3e4-4dfb-b1c6-86778f383f73/partners",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "companies",
+                "b9ffc898-c3e4-4dfb-b1c6-86778f383f73",
+                "partners"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove company partner",
+          "id": "988f0975-8f63-4670-944e-e54edfa4fce1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/companies/b9ffc898-c3e4-4dfb-b1c6-86778f383f73/partners/012af8a2-8de0-45b7-b9c7-dcfdb3b491b3",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "companies",
+                "b9ffc898-c3e4-4dfb-b1c6-86778f383f73",
+                "partners",
+                "012af8a2-8de0-45b7-b9c7-dcfdb3b491b3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "da076ca8-352e-43e9-9bd0-ade79081a6d7"
+    },
+    {
+      "name": "Main Activities",
+      "item": [
+        {
+          "name": "List main activities",
+          "id": "bdd2acf6-b892-4d1b-b29e-288a7a198ec9",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/company-main-activities",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "company-main-activities"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "5888f430-4a90-41f0-883f-4a32209278c8"
+    },
+    {
+      "name": "Qualifications",
+      "item": [
+        {
+          "name": "List company partner qualifications",
+          "id": "1443a465-e2e5-45c1-a94d-491fb09173a7",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/{{apiVersion}}/company-partner-qualifications",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "{{apiVersion}}",
+                "company-partner-qualifications"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "3d064518-f4a3-4a01-97ca-c7200165b700"
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health",
+          "id": "161569c7-26e3-4833-8717-459dcf616418",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/health",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ready",
+          "id": "8f375fc7-9df8-4321-86ad-3ca139bfb5a5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/health/ready",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "health",
+                "ready"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Live",
+          "id": "bd5afc8c-3dfe-4984-9082-1c8538359014",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/health/live",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "health",
+                "live"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Details",
+          "id": "c6400aa6-187f-4933-9127-e875adec73ee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{companies-lab-api-url}}/health/details",
+              "host": [
+                "{{companies-lab-api-url}}"
+              ],
+              "path": [
+                "health",
+                "details"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "f854117a-f4ef-43c8-b067-26118c2b13cb"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "id": "aaeb75fc-b564-4108-9f91-cfa8e07fc7b3",
+      "key": "randomZipCode",
+      "value": ""
+    },
+    {
+      "id": "1cb6960b-233b-4493-b6a3-e75003d4234e",
+      "key": "randomCnpj",
+      "value": ""
+    },
+    {
+      "id": "9854e0cf-2114-4805-a613-0a3d87291dcb",
+      "key": "randomMainActivity",
+      "value": ""
+    },
+    {
+      "id": "d149e7ac-4951-4d6d-b852-4a594cc73d49",
+      "key": "randomLegalNature",
+      "value": ""
+    },
+    {
+      "id": "806f9097-4cfe-4f24-8ba6-c13447d24829",
+      "key": "randomPartnerQualifications",
+      "value": ""
+    },
+    {
+      "id": "9f0c4de5-2ebf-43a7-a5fc-fce99564e782",
+      "key": "randomPartnerIds",
+      "value": ""
+    },
+    {
+      "id": "2258be24-e380-4f6c-8029-c544984fc1d2",
+      "key": "lastCreatedCompanyId",
+      "value": ""
+    },
+    {
+      "id": "c611811f-09f2-46dc-be7b-27941630b645",
+      "key": "lastCreatedPartnerId",
+      "value": ""
+    }
+  ]
+}
