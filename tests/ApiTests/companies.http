@@ -1,7 +1,19 @@
 ### Companies Endpoints
-# These endpoints require authentication. Run authentication.http first to get a token.
+# Authentication is included below - run the auth request first to get a token
 
-@access_token = your-token-here
+### Authenticate
+# @name auth
+POST {{baseUrl}}/{{apiVersion}}/authentication/token
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+###
+# Capture the access token from the response
+@access_token = {{auth.response.body.token}}
 
 ### Find Companies
 # Get a list of all companies

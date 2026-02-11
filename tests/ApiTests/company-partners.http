@@ -1,8 +1,23 @@
 ### Company Partners Endpoints
 # These endpoints manage the relationship between companies and partners.
-# Run authentication.http, companies.http (Create Company), and partners.http (Create Partner) first.
 
-@access_token = your-token-here
+### Authenticate
+# @name auth
+POST {{baseUrl}}/{{apiVersion}}/authentication/token
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+###
+# Capture the access token from the response
+@access_token = {{auth.response.body.token}}
+
+###
+# Note: You'll need to create a company and partner first to get their IDs
+# Or manually set these variables after creating them
 @lastCreatedCompanyId = your-company-id-here
 @lastCreatedPartnerId = your-partner-id-here
 
