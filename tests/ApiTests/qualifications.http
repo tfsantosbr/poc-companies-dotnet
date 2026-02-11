@@ -1,0 +1,9 @@
+### Qualifications Endpoints
+# These endpoints require authentication. Run authentication.http first to get a token.
+
+@access_token = your-token-here
+
+### List Company Partner Qualifications
+# Get a list of all available partner qualifications
+GET {{baseUrl}}/{{apiVersion}}/company-partner-qualifications
+Authorization: Bearer {{access_token}}

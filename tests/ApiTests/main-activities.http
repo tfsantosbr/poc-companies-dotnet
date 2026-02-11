@@ -1,0 +1,9 @@
+### Main Activities Endpoints
+# These endpoints require authentication. Run authentication.http first to get a token.
+
+@access_token = your-token-here
+
+### List Main Activities
+# Get a list of all available company main activities
+GET {{baseUrl}}/{{apiVersion}}/company-main-activities
+Authorization: Bearer {{access_token}}

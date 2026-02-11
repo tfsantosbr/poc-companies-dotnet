@@ -1,0 +1,34 @@
+### Company Partners Endpoints
+# These endpoints manage the relationship between companies and partners.
+# Run authentication.http, companies.http (Create Company), and partners.http (Create Partner) first.
+
+@access_token = your-token-here
+@lastCreatedCompanyId = your-company-id-here
+@lastCreatedPartnerId = your-partner-id-here
+
+### Find Company Partners
+# Get all partners associated with a specific company
+GET {{baseUrl}}/{{apiVersion}}/companies/{{lastCreatedCompanyId}}/partners
+Authorization: Bearer {{access_token}}
+
+###
+
+### Add Company Partner
+# Add a partner to a company
+# Qualification IDs: 5, 10, 16, 22, 54
+POST {{baseUrl}}/{{apiVersion}}/companies/{{lastCreatedCompanyId}}/partners
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "partnerId": "{{lastCreatedPartnerId}}",
+  "qualificationId": 10,
+  "joinedAt": "2022-12-13"
+}
+
+###
+
+### Remove Company Partner
+# Remove a partner from a company
+DELETE {{baseUrl}}/{{apiVersion}}/companies/{{lastCreatedCompanyId}}/partners/{{lastCreatedPartnerId}}
+Authorization: Bearer {{access_token}}

@@ -1,0 +1,16 @@
+### Authentication Endpoints
+# Run this request first to obtain an access token for authenticated endpoints
+
+### Request Token
+# @name auth
+POST {{baseUrl}}/{{apiVersion}}/authentication/token
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "test"
+}
+
+###
+# Capture the access token from the response
+@access_token = {{auth.response.body.token}}

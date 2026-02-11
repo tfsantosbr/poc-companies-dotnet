@@ -1,0 +1,34 @@
+### Partners Endpoints
+# These endpoints require authentication. Run authentication.http first to get a token.
+
+@access_token = your-token-here
+
+### List Partners
+# Get a list of all partners
+GET {{baseUrl}}/{{apiVersion}}/partners
+Authorization: Bearer {{access_token}}
+
+###
+
+### Create Partner
+# @name createPartner
+POST {{baseUrl}}/{{apiVersion}}/partners
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com"
+}
+
+###
+# Capture the created partner ID
+@lastCreatedPartnerId = {{createPartner.response.body.id}}
+
+###
+
+### Remove Partner
+# Delete a specific partner (uses the ID captured from Create Partner)
+DELETE {{baseUrl}}/{{apiVersion}}/partners/{{lastCreatedPartnerId}}
+Authorization: Bearer {{access_token}}

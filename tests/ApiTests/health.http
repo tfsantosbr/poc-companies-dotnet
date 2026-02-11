@@ -1,0 +1,24 @@
+### Health Check Endpoints
+# These endpoints typically don't require authentication and are used to verify API availability.
+
+### Health
+# Basic health check endpoint
+GET {{baseUrl}}/health
+
+###
+
+### Ready
+# Check if the API is ready to accept requests
+GET {{baseUrl}}/health/ready
+
+###
+
+### Live
+# Check if the API is alive
+GET {{baseUrl}}/health/live
+
+###
+
+### Details
+# Get detailed health information about the API
+GET {{baseUrl}}/health/details

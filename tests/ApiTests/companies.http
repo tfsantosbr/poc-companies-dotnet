@@ -1,0 +1,199 @@
+### Companies Endpoints
+# These endpoints require authentication. Run authentication.http first to get a token.
+
+@access_token = your-token-here
+
+### Find Companies
+# Get a list of all companies
+GET {{baseUrl}}/{{apiVersion}}/companies
+Authorization: Bearer {{access_token}}
+
+###
+
+### Create Company
+# @name createCompany
+# CNPJ must be 14 digits, mainActivityId must be valid (e.g., 4399103, 4723700, 4774100, 5611203, 9492800)
+# Legal nature options: EIRELI, MEI, LTDA
+# Qualification IDs: 5, 10, 16, 22, 54
+# Partner IDs (examples): 012af8a2-8de0-45b7-b9c7-dcfdb3b491b3, 1a0592e2-71f0-48cc-8267-0f8d75fe0a5e
+POST {{baseUrl}}/{{apiVersion}}/companies
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "cnpj": "12345678901234",
+  "name": "Tech Solutions Inc",
+  "legalNature": "LTDA",
+  "mainActivityId": 4723700,
+  "address": {
+    "postalCode": "12345",
+    "street": "Main Street",
+    "number": "100",
+    "complement": "Suite 200",
+    "neighborhood": "Downtown",
+    "city": "São Paulo",
+    "state": "SP",
+    "country": "Brazil"
+  },
+  "partners": [
+    {
+      "partnerId": "012af8a2-8de0-45b7-b9c7-dcfdb3b491b3",
+      "qualificationId": 5,
+      "joinedAt": "2022-01-01"
+    }
+  ],
+  "phones": [
+    {
+      "countryCode": "11",
+      "number": "987654321"
+    }
+  ]
+}
+
+###
+# Capture the created company ID
+@lastCreatedCompanyId = {{createCompany.response.body.id}}
+
+###
+
+### Import Companies
+# Import multiple companies at once
+POST {{baseUrl}}/{{apiVersion}}/companies/import
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "companies": [
+    {
+      "cnpj": "11111111111111",
+      "name": "Company One",
+      "legalNature": "EIRELI",
+      "mainActivityId": 4399103,
+      "address": {
+        "postalCode": "11111",
+        "street": "First Avenue",
+        "number": "10",
+        "complement": "Apt 1",
+        "neighborhood": "North District",
+        "city": "Rio de Janeiro",
+        "state": "RJ",
+        "country": "Brazil"
+      },
+      "partners": [
+        {
+          "partnerId": "1a0592e2-71f0-48cc-8267-0f8d75fe0a5e",
+          "qualificationId": 10,
+          "joinedAt": "2022-01-01"
+        }
+      ],
+      "phones": [
+        {
+          "countryCode": "11",
+          "number": "111111111"
+        }
+      ]
+    },
+    {
+      "cnpj": "22222222222222",
+      "name": "Company Two",
+      "legalNature": "MEI",
+      "mainActivityId": 5611203,
+      "address": {
+        "postalCode": "22222",
+        "street": "Second Avenue",
+        "number": "20",
+        "complement": "Apt 2",
+        "neighborhood": "South District",
+        "city": "Brasília",
+        "state": "DF",
+        "country": "Brazil"
+      },
+      "partners": [
+        {
+          "partnerId": "9132b269-ff90-402d-88d0-2f9e7fdb312f",
+          "qualificationId": 16,
+          "joinedAt": "2022-01-01"
+        }
+      ],
+      "phones": [
+        {
+          "countryCode": "11",
+          "number": "222222222"
+        }
+      ]
+    },
+    {
+      "cnpj": "33333333333333",
+      "name": "Company Three",
+      "legalNature": "LTDA",
+      "mainActivityId": 9492800,
+      "address": {
+        "postalCode": "33333",
+        "street": "Third Avenue",
+        "number": "30",
+        "complement": "Apt 3",
+        "neighborhood": "East District",
+        "city": "Belo Horizonte",
+        "state": "MG",
+        "country": "Brazil"
+      },
+      "partners": [
+        {
+          "partnerId": "c7baa255-6bfb-4d67-91da-fc1d858fdf00",
+          "qualificationId": 22,
+          "joinedAt": "2022-01-01"
+        }
+      ],
+      "phones": [
+        {
+          "countryCode": "11",
+          "number": "333333333"
+        }
+      ]
+    }
+  ]
+}
+
+###
+
+### Get Valid Company
+# Get a specific company by ID (uses the ID captured from Create Company)
+GET {{baseUrl}}/{{apiVersion}}/companies/{{lastCreatedCompanyId}}
+Authorization: Bearer {{access_token}}
+
+###
+
+### Update Valid Company
+# Update a specific company (uses the ID captured from Create Company)
+PUT {{baseUrl}}/{{apiVersion}}/companies/{{lastCreatedCompanyId}}
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "Tech Solutions Inc - Updated",
+  "legalNature": "LTDA",
+  "mainActivityId": 4774100,
+  "address": {
+    "postalCode": "54321",
+    "street": "Updated Street",
+    "number": "200",
+    "complement": "Suite 300",
+    "neighborhood": "Uptown",
+    "city": "São Paulo",
+    "state": "SP",
+    "country": "Brazil"
+  },
+  "phones": [
+    {
+      "countryCode": "11",
+      "number": "123456789"
+    }
+  ]
+}
+
+###
+
+### Remove Valid Company
+# Delete a specific company (uses the ID captured from Create Company)
+DELETE {{baseUrl}}/{{apiVersion}}/companies/{{lastCreatedCompanyId}}
+Authorization: Bearer {{access_token}}
