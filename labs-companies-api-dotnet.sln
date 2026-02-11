@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Companies.Infrastructure", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EE1A73F5-1831-4A0C-8268-880C862DD3C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Companies.Application.Tests", "tests\Companies.Application.Tests\Companies.Application.Tests.csproj", "{D13645AD-AE33-4484-9E75-0598F65F982B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Companies.Application.Tests", "tests\UnitTests\Companies.Application.Tests\Companies.Application.Tests.csproj", "{D13645AD-AE33-4484-9E75-0598F65F982B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Companies.Import.Worker", "src\Companies.Import.Worker\Companies.Import.Worker.csproj", "{7667C406-2739-4B9D-A352-25539A738496}"
 EndProject
