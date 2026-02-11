@@ -23,7 +23,64 @@ The `http-client.env.json` file defines two environments:
 - **docker**: API running in Docker at `http://localhost:8000`
 - **local**: API running locally at `https://localhost:7274`
 
-To switch environments in VS Code REST Client, use the environment selector in the status bar.
+### How to Switch Environments
+
+The REST Client extension provides multiple ways to switch between environments:
+
+#### Method 1: Status Bar (Recommended)
+
+1. Open any `.http` file in VS Code
+2. Look at the bottom-right corner of the VS Code status bar
+3. Click on **"No Environment"** or the currently selected environment name
+4. A dropdown menu will appear with available environments:
+   - `docker`
+   - `local`
+5. Select the desired environment
+6. The status bar will update to show the selected environment
+7. All requests will now use variables from the selected environment
+
+#### Method 2: Command Palette
+
+1. Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac)
+2. Type "Rest Client: Switch Environment"
+3. Select the command from the list
+4. Choose between `docker` or `local`
+
+#### Method 3: Right-Click Context Menu
+
+1. Open any `.http` file
+2. Right-click anywhere in the file
+3. Select **"Switch Environment"** from the context menu
+4. Choose the desired environment
+
+### Environment Variables
+
+Once an environment is selected, the following variables are automatically available:
+
+| Variable | Docker Value | Local Value |
+|----------|--------------|-------------|
+| `{{baseUrl}}` | `http://localhost:8000` | `https://localhost:7274` |
+| `{{apiVersion}}` | `v1` | `v1` |
+
+**Example:** When you select the `docker` environment, `{{baseUrl}}` in your requests will be replaced with `http://localhost:8000`.
+
+### Visual Guide
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ VS Code Status Bar (bottom-right)                          │
+├─────────────────────────────────────────────────────────────┤
+│ ... │ UTF-8 │ LF │ HTTP │ [No Environment ▼] │ ⚙️ │      │
+│                              ↑                               │
+│                         Click here to switch                │
+└─────────────────────────────────────────────────────────────┘
+```
+
+After selecting an environment, the status bar will show:
+- `[docker ▼]` - Using Docker environment (port 8000)
+- `[local ▼]` - Using Local environment (port 7274)
+
+**💡 Tip:** Always verify the correct environment is selected before running requests to avoid connection errors!
 
 ## Getting Started
 
@@ -175,9 +232,16 @@ To run a test:
 - Verify the token is being captured correctly
 
 ### Connection Refused
-- Verify the API is running on the correct port
-- Check that you've selected the correct environment (docker vs local)
-- For local HTTPS, you may need to accept the self-signed certificate
+- **Check environment selection**: Verify the correct environment is active in the status bar
+  - If API is running in Docker → Select `docker` environment
+  - If API is running locally → Select `local` environment
+- **Verify the API is running**:
+  - Docker: Run `docker ps` to check if `labs-companies-api` container is running
+  - Local: Check if the API process is running on port 7274
+- **Port verification**:
+  - Docker uses port `8000` (HTTP)
+  - Local uses port `7274` (HTTPS)
+- **HTTPS certificate**: For local HTTPS, you may need to accept the self-signed certificate in your browser first
 
 ### Invalid Data
 - Check data constraints (CNPJ length, valid IDs, etc.)
