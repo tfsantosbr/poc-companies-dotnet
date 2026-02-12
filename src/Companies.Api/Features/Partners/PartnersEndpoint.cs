@@ -17,13 +17,16 @@ public class PartnerEndpoints : IEndpointBuilder
         var group = builder.MapGroup("partners").WithTags("Partners");
 
         group.MapGet("/", FindPartners)
+            .RequireAuthorization()
             .Produces<List<PartnerItem>>(StatusCodes.Status200OK);
 
         group.MapPost("/", CreatePartner)
+            .RequireAuthorization()
             .Produces<PartnerItem>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest);
 
         group.MapDelete("/{partnerId}", DeletePartner)
+            .RequireAuthorization()
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound);
     }

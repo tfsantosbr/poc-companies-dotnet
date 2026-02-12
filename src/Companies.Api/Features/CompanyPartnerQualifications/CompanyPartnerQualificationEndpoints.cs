@@ -13,6 +13,7 @@ public class CompanyPartnerQualificationEndpoints : IEndpointBuilder
             .WithTags("Company Partner Qualifications");
 
         group.MapGet("/", ListCompanyPartnerQualifications)
+            .RequireAuthorization()
             .Produces<List<CompanyPartnerQualification>>(StatusCodes.Status200OK);
     }
 

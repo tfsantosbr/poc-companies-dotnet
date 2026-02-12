@@ -13,6 +13,7 @@ public class CompanyMainActivityEndpoints : IEndpointBuilder
             .WithTags("Company Main Activities");
 
         group.MapGet("/", ListCompanyMainActivities)
+            .RequireAuthorization()
             .Produces<List<CompanyMainActivity>>(StatusCodes.Status200OK);
     }
 

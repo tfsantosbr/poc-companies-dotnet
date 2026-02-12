@@ -18,19 +18,24 @@ public class AuthenticationEndpoints : IEndpointBuilder
 
     public static IResult RequestToken(
         CreateTokenRequest request,
-        ITokenService tokenService)
+        ITokenService tokenService,
+        IConfiguration configuration)
     {
-        if (request.Username != "test" || request.Password != "test")
+        // Ler array de credenciais
+        var credentials = configuration.GetSection("TestCredentials")
+            .Get<List<TestCredential>>() ?? new List<TestCredential>();
+
+        // Buscar usuário no array
+        var user = credentials.FirstOrDefault(c =>
+            c.Login == request.Username && c.Password == request.Password);
+
+        if (user == null)
         {
             return Results.NotFound(new Error("User", "User not found"));
         }
 
-        // fake test user
-        var userId = new Guid("e111a2b9-8c36-4953-a05a-c2b0aee01809");
-        var userName = "test User";
-        var userEmail = "test@email.com";
-
-        var token = tokenService.GenerateToken(userId.ToString(), userName, userEmail);
+        // Gerar token com dados do usuário encontrado
+        var token = tokenService.GenerateToken(user.Id, user.Name, user.Email);
 
         return Results.Ok(new { token });
     }

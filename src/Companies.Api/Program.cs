@@ -17,6 +17,7 @@ builder.Services.ConfigureJsonOptions();
 builder.Services.ConfigureExceptionHandlers(environment);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructure(configuration);
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -26,5 +27,6 @@ app.MapEnvironmentConfigurations(environment);
 app.UseCorrelationContext();
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

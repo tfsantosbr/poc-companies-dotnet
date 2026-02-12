@@ -17,14 +17,17 @@ public class CompanyPartnerEndpoints : IEndpointBuilder
         var group = builder.MapGroup("companies/{companyId}/partners").WithTags("Company Partners");
 
         group.MapGet("/", FindPartners)
+            .RequireAuthorization()
             .Produces<List<CompanyPartnerModel>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPost("/", AddPartnerInCompany)
+            .RequireAuthorization()
             .Produces<CompanyPartnerModel>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest);
 
         group.MapDelete("/{partnerId}", RemovePartnerFromCompany)
+            .RequireAuthorization()
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status400BadRequest);
     }

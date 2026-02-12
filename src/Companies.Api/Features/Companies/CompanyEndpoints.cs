@@ -22,26 +22,32 @@ public class CompanyEndpoints : IEndpointBuilder
         var group = builder.MapGroup("companies").WithTags("Companies");
 
         group.MapGet("/", FindCompanies)
+            .RequireAuthorization()
             .Produces<IPagedList<CompanyItem>>();
 
         group.MapPost("/", CreateCompany)
+            .RequireAuthorization()
             .Produces<CompanyDetails>(StatusCodes.Status201Created)
             .Produces<List<Error>>(StatusCodes.Status400BadRequest);
 
         group.MapPost("/import", ImportCompanies)
+            .RequireAuthorization()
             .Produces<CompanyDetails>(StatusCodes.Status201Created)
             .Produces<List<Error>>(StatusCodes.Status400BadRequest);
 
         group.MapGet("/{companyId}", GetCompanyDetails)
+            .RequireAuthorization()
             .Produces<CompanyDetails>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPut("/{companyId}", UpdateCompany)
+            .RequireAuthorization()
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
             .Produces<List<Error>>(StatusCodes.Status400BadRequest);
 
         group.MapDelete("/{companyId}", RemoveCompany)
+            .RequireAuthorization()
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound);
     }
