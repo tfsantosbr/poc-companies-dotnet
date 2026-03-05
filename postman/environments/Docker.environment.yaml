@@ -1,6 +1,0 @@
-name: Docker
-values:
-  - key: companies-api-url
-    value: ''
-    enabled: true
-color: 300

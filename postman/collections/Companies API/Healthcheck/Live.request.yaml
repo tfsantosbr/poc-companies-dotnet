@@ -1,5 +1,0 @@
-$kind: http-request
-name: Live
-url: "{{companies-api-url}}/health/live"
-method: GET
-order: 4288332130706413
