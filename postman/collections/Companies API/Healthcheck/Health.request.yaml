@@ -1,0 +1,5 @@
+$kind: http-request
+name: Health
+url: "{{companies-api-url}}/health"
+method: GET
+order: 1772744159413
